@@ -60,7 +60,7 @@ class ScanModel {
       return;
     }
 
-    type = "other";
+    type = "txt";
     return;
 
 

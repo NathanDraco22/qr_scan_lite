@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:qr_lite/database/sqlite/db_sql_services.dart';
 import 'package:qr_lite/models/scan_model.dart';
 
@@ -17,7 +16,7 @@ class QrScansCubit extends Cubit<QrScansState> {
 
     final scansFromDB = await database.getAllScans();
 
-    emit(QrScansSetState(scansFromDB));
+    emit(QrScansSetState(scansFromDB.reversed.toList()));
 
 
   }
@@ -31,7 +30,7 @@ class QrScansCubit extends Cubit<QrScansState> {
 
     scan.id = res;
 
-    emit( QrScansSetState([...state.scans, scan]) );
+    emit( QrScansSetState([scan, ...state.scans]) );
 
 
   }
@@ -52,7 +51,7 @@ class QrScansCubit extends Cubit<QrScansState> {
 
     }
 
-    emit(QrScansSetState([...newState]));
+    // emit(QrScansSetState([...newState]));
 
 
   }

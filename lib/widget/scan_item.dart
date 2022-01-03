@@ -7,9 +7,13 @@ import 'package:qr_lite/utils/utils.dart';
 
 
 class ScanItem extends StatelessWidget {
-  const ScanItem({Key? key, required this.scanModel}) : super(key: key);
+  const ScanItem({Key? key, 
+  required this.scanModel, 
+  required this.onDeletePressed}) 
+    : super(key: key);
 
   final ScanModel scanModel;
+  final void Function()? onDeletePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -21,25 +25,25 @@ class ScanItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         color: Theme.of(context).primaryColor,
       ),
-
+    
       child: Stack(children: [
-
-        _WidgetHeader(scanModel: scanModel),
+    
+        _WidgetHeader(scanModel: scanModel, onDeletePressed: onDeletePressed,),
         
         Positioned(
           left: 8,
           top: 25,
           child: _IconCircle(scanModel: scanModel),
         ),
-
+    
         const Positioned(
           right: 4,
           bottom: 4,
           child: _Buttons()
         )
-
+    
       ],),
-
+    
     );
   }
 }
@@ -47,10 +51,12 @@ class ScanItem extends StatelessWidget {
 class _WidgetHeader extends StatelessWidget {
   const _WidgetHeader({
     Key? key,
-    required this.scanModel,
+    required this.scanModel, 
+    required this.onDeletePressed,
   }) : super(key: key);
 
   final ScanModel scanModel;
+  final void Function()? onDeletePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +72,7 @@ class _WidgetHeader extends StatelessWidget {
         IconButton(
           splashRadius: 20,
           padding: EdgeInsets.zero,
-          onPressed: (){
-            BlocProvider.of<QrScansCubit>(context).deleteScans(scanModel.id!);
-          }, 
+          onPressed: onDeletePressed,
           icon: Icon(
             Icons.delete, 
             color: Colors.red.shade400,)

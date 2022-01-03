@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_lite/cubit/Theme/theme_cubit.dart';
 import 'package:qr_lite/cubit/qr_scans_cubit.dart';
+import 'package:qr_lite/models/scan_model.dart';
 import 'package:qr_lite/services/qr/qr_services.dart';
 import 'package:qr_lite/widget/custom_drawe.dart';
 import 'package:qr_lite/widget/scan_item.dart';
@@ -10,6 +11,7 @@ import 'package:qr_lite/widget/scan_item.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,11 @@ class HomeScreen extends StatelessWidget {
           child: const Icon(Icons.qr_code),
           onPressed: ()async{
             final result = await QRservice.launchQRScanner();
-            result != null ? qrCubit.addScan(result) : null;
+            if(result != null) {
+
+              qrCubit.addScan(result);
+
+            }
           }
         ),
 
@@ -50,6 +56,8 @@ class _MainContentScans extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
+  
+
   @override
   Widget build(BuildContext context) {
 
@@ -57,23 +65,47 @@ class _MainContentScans extends StatelessWidget {
 
       builder: (BuildContext context, state) {  
 
-        final listScans = state.scans;
+        final GlobalKey<AnimatedListState>listState = GlobalKey<AnimatedListState>();
 
-        return ListView.builder(
+        final listScans = List.of(state.scans);
+
+        return AnimatedList(
+          key: listState,
           physics: const BouncingScrollPhysics(),
-          itemCount: listScans.length,
-          itemBuilder: ( _ , i ){
+          initialItemCount: listScans.length, 
+          itemBuilder: ( _ , int index, Animation<double> animation) { 
 
-            final scan = listScans[i];
-
-            return ScanItem(scanModel: scan,);
-
-
-          }
-
-       );
+            return ScanItem(
+              scanModel: listScans[index],
+              onDeletePressed: (){
+                BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
+                onDeletePressed(index, listScans, listState);
+              }
+            );
+           },
+      
+        );
 
       },
      );
+  }
+
+  void onDeletePressed( int index, 
+  List<ScanModel> scans, GlobalKey<AnimatedListState> listState) {
+
+    final removedItem = scans[index];
+
+    scans.removeAt(index);
+
+
+    listState.currentState!.removeItem(
+      index, (context, animation) => SizeTransition(
+        sizeFactor: animation,
+        child: ScanItem(
+          scanModel: removedItem, 
+          onDeletePressed: (){}),
+      )
+    );
+
   }
 }
