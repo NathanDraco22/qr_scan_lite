@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_lite/cubit/qr_scans_cubit.dart';
 import 'package:qr_lite/models/scan_model.dart';
+import 'package:qr_lite/services/qr/qr_services.dart';
 import 'package:qr_lite/utils/utils.dart';
 
 
@@ -36,10 +35,10 @@ class ScanItem extends StatelessWidget {
           child: _IconCircle(scanModel: scanModel),
         ),
     
-        const Positioned(
+        Positioned(
           right: 4,
           bottom: 4,
-          child: _Buttons()
+          child: _Buttons(scanModel: scanModel,)
         )
     
       ],),
@@ -124,10 +123,17 @@ class _IconCircle extends StatelessWidget {
 class _Buttons extends StatelessWidget {
   const _Buttons({
     Key? key,
+    required this.scanModel
   }) : super(key: key);
+
+  final ScanModel scanModel;
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
     return Row(children: [
       SizedBox(
         height: 30,
@@ -153,7 +159,9 @@ class _Buttons extends StatelessWidget {
             padding: EdgeInsets.zero,
             backgroundColor: Colors.green.shade300
           ),
-          onPressed: (){}, 
+          onPressed: (){
+            QRservice.tryLaunch(scanModel.value);
+          }, 
           child: const Icon(Icons.arrow_forward_sharp, size: 24,color: Colors.white,),
         )
         

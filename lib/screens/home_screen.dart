@@ -77,9 +77,14 @@ class _MainContentScans extends StatelessWidget {
 
             return ScanItem(
               scanModel: listScans[index],
-              onDeletePressed: (){
-                BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
-                onDeletePressed(index, listScans, listState);
+              onDeletePressed: ()async {
+                final bool confirm = await showQRDialog(context);
+
+                if (confirm){
+                  BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
+                  onDeletePressed(index, listScans, listState);
+                }
+
               }
             );
            },
@@ -90,8 +95,43 @@ class _MainContentScans extends StatelessWidget {
      );
   }
 
+
+  Future<bool> showQRDialog(BuildContext context)async {
+
+    bool confirm = false;
+
+    await showDialog<bool>(context: context,
+    builder: ( _ )=> AlertDialog(
+      title: const Text("Delete this Scan"),
+      actions: [
+        TextButton(
+          style: TextButton.styleFrom(
+            primary:  Colors.red.shade400,
+          ),
+          onPressed: (){
+            Navigator.pop(context);
+          }, 
+          child: const Text("No", style: TextStyle(fontWeight: FontWeight.bold),),),
+        TextButton(
+           style: TextButton.styleFrom(
+             primary:  Colors.blue.shade400,
+          ),
+          onPressed: (){
+            confirm = true;
+            Navigator.pop(context);
+          }, 
+          child: const Text("Yes", style: TextStyle(fontWeight: FontWeight.bold),))
+      ],
+    )
+    );
+
+    return confirm;
+
+  }
+
   void onDeletePressed( int index, 
   List<ScanModel> scans, GlobalKey<AnimatedListState> listState) {
+
 
     final removedItem = scans[index];
 

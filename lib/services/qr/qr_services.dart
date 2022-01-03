@@ -20,19 +20,24 @@ class QRservice {
 
 //--- try to launch a url-----------------------
 
+    await tryLaunch(result);
+
+    return ScanModel(value: result);
+
+  }
+
+  static Future tryLaunch(String result)async{
+
     if( await ul.canLaunch(result) ){
 
       ul.launch(result);
 
       ScanModel(
         value: result
-      );
-
-      
+      );      
     
     }
 
-    return ScanModel(value: result);
 
   }
 
