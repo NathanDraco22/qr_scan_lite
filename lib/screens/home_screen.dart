@@ -40,7 +40,19 @@ class HomeScreen extends StatelessWidget {
         title: const Text("QR Scans"),
       ),
 
-      body: const _MainContentScans()
+      body: Stack(
+        alignment: Alignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.qr_code_2_rounded,size: 240, color: Colors.grey.withOpacity(0.4),),
+              const SizedBox(height:80)
+            ],
+          ),
+          const _MainContentScans(),
+        ],
+      )
 
     );
   }

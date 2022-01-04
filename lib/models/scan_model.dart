@@ -16,7 +16,7 @@ class ScanModel {
   ScanModel({
     this.id, 
     this.type,
-    this.storage, 
+    this.storage = 0, 
     required this.value}){
 
       checkType(value);
@@ -28,8 +28,7 @@ class ScanModel {
       id: mapJson["id"],
       type: mapJson["type"],
       value: mapJson["value"],
-      storage: mapJson["storage"]
-      
+      storage: mapJson["storage"] ?? 0
       );
   }
 

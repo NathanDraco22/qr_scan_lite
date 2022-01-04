@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => QrScansCubit()),
         BlocProvider(create: (_) => ThemeCubit())
       ],
-      child: _RootApp()
+      child: const _RootApp()
     );
   }
 }
