@@ -26,7 +26,7 @@ class QRservice {
 
   }
 
-  static Future tryLaunch(String result)async{
+  static Future<bool> tryLaunch(String result)async{
 
     if( await ul.canLaunch(result) ){
 
@@ -34,11 +34,12 @@ class QRservice {
 
       ScanModel(
         value: result
-      );      
+      ); 
+      return true;     
     
     }
 
-
+    return false;
   }
 
 
