@@ -11,15 +11,30 @@ class StorageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Row(
-        children: const [
-          Icon(Icons.save_alt),
-          SizedBox(width: 8,),
-          Text("Storage"),
-        ],
-      ),),
+      appBar: AppBar(title: const Text("My Storage"),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: (){
+          BlocProvider.of<QrScansCubit>(context, listen: false).getAllScans();
+          Navigator.pop(context);
+        },
+      ),
+      backgroundColor: Colors.blueGrey
+      ),
 
-      body: const _MainContentScans()
+      body:Stack(
+        alignment: Alignment.center,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.save_alt_rounded,size: 240, color: Colors.grey.withOpacity(0.4),),
+              const SizedBox(height:80)
+            ],
+          ),
+          const _MainContentScans(),
+        ],
+      )
     );
   }
 }

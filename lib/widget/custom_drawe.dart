@@ -26,7 +26,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
           Container(
             height: 240,
-            color: Colors.blue,
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: AssetImage("assets/qr_banner.jpg")
+              )
+            ),
           ),
 
 
@@ -37,7 +43,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
             },
             leading: const Icon(Icons.save_alt),
-            title: const Text("Storage"),
+            title: const Text("My Storage"),
             trailing: const Icon(Icons.arrow_right),
           ),
 

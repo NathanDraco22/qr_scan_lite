@@ -88,7 +88,7 @@ class _MainContentScans extends StatelessWidget {
               scanModel: listScans[index],
 
               onDeletePressed: ()async{
-                final bool confirm = await showQRDialog(context);
+                final bool confirm = await showQRDialog(context, "Delete this Scan");
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
                   onDeletePressed(index, listScans, listState);
@@ -96,7 +96,7 @@ class _MainContentScans extends StatelessWidget {
               },
 
               onSavePressed:()async{
-                final bool confirm = await showQRDialog(context);
+                final bool confirm = await showQRDialog(context, "Move to My Storage");
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).moveInStorage(listScans[index]);
                 }
@@ -110,13 +110,13 @@ class _MainContentScans extends StatelessWidget {
   }
 
 
-  Future<bool> showQRDialog(BuildContext context)async {
+  Future<bool> showQRDialog(BuildContext context, String message)async {
 
     bool confirm = false;
 
     await showDialog<bool>(context: context,
     builder: ( _ )=> AlertDialog(
-      title: const Text("Delete this Scan"),
+      title: Text(message),
       actions: [
         TextButton(
           style: TextButton.styleFrom(
