@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_lite/cubit/Theme/theme_cubit.dart';
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({
     Key? key,
-    required this.themeCubit,
   }) : super(key: key);
 
-  final ThemeCubit themeCubit;
 
   @override
   State<CustomDrawer> createState() => _CustomDrawerState();
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+
+   
   @override
   Widget build(BuildContext context) {
+
+    final themeCubit = BlocProvider.of<ThemeCubit>(context, listen: false);
+
     return Drawer(
       child: Column(
         children: [
@@ -27,7 +31,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
 
           ListTile(
-            onTap: (){},
+            onTap: (){
+
+              Navigator.pushNamed(context, "storage");
+
+            },
             leading: const Icon(Icons.save_alt),
             title: const Text("Storage"),
             trailing: const Icon(Icons.arrow_right),
@@ -42,10 +50,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
 
             
-            value: widget.themeCubit.state.darkMode,
+            value: themeCubit.state.darkMode,
             onChanged: (value){
 
-              widget.themeCubit.setDarkMode(value);
+              themeCubit.setDarkMode(value);
               setState(() {
                 
               }); 

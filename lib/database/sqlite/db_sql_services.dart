@@ -37,7 +37,8 @@ class DBservice{
           CREATE TABLE Scans(
             id INTEGER PRIMARY KEY,
             type TEXT,
-            value TEXT
+            value TEXT,
+            storage INTEGER
           )
         ''');
       },
@@ -74,6 +75,20 @@ class DBservice{
     final db = await database;
 
     final res = await db!.delete("Scans", where: "id = ?", whereArgs: [id] );
+
+    return res;
+
+  }
+
+  Future<int> updateScan( ScanModel scanModel ) async{
+
+    final db = await database;
+
+    final res = await db!.update(
+      "Scans", scanModel.toJsonMap(), 
+      where: "id = ?",
+      whereArgs: [scanModel.id]
+      );
 
     return res;
 

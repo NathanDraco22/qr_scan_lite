@@ -8,11 +8,13 @@ import 'package:qr_lite/utils/utils.dart';
 class ScanItem extends StatelessWidget {
   const ScanItem({Key? key, 
   required this.scanModel, 
-  required this.onDeletePressed}) 
+  required this.onDeletePressed, 
+  required this.onSavePressed}) 
     : super(key: key);
 
   final ScanModel scanModel;
-  final void Function()? onDeletePressed;
+  final void Function() onDeletePressed;
+  final void Function() onSavePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class ScanItem extends StatelessWidget {
         Positioned(
           right: 4,
           bottom: 4,
-          child: _Buttons(scanModel: scanModel,)
+          child: _Buttons(scanModel: scanModel,onSavePressed: onSavePressed,)
         )
     
       ],),
@@ -123,19 +125,20 @@ class _IconCircle extends StatelessWidget {
 class _Buttons extends StatelessWidget {
   const _Buttons({
     Key? key,
-    required this.scanModel
+    required this.scanModel, required this.onSavePressed
   }) : super(key: key);
 
   final ScanModel scanModel;
+  final Function() onSavePressed;
 
   @override
   Widget build(BuildContext context) {
 
-
-
-
     return Row(children: [
-      SizedBox(
+
+      scanModel.storage == 1 
+      ? const SizedBox()
+      : SizedBox(
         height: 30,
         width: 70,
         child: TextButton(
@@ -143,7 +146,7 @@ class _Buttons extends StatelessWidget {
             padding: EdgeInsets.zero,
             backgroundColor: Colors.blue.shade200
           ),
-          onPressed: (){}, 
+          onPressed: onSavePressed, 
           child: const Icon(Icons.save_alt, size: 24,color: Colors.white,),
         )
         
@@ -169,4 +172,6 @@ class _Buttons extends StatelessWidget {
       
     ],);
   }
+
+
 }

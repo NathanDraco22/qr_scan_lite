@@ -2,58 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_lite/cubit/qr_scans_cubit.dart';
 import 'package:qr_lite/models/scan_model.dart';
-import 'package:qr_lite/services/qr/qr_services.dart';
-import 'package:qr_lite/widget/custom_drawe.dart';
 import 'package:qr_lite/widget/scan_item.dart';
 
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class StorageScreen extends StatelessWidget {
+  const StorageScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    final qrCubit = BlocProvider.of<QrScansCubit>(context, listen: false);
-   
-
-    qrCubit.getAllScans();
-
     return Scaffold(
-
-      drawer: const CustomDrawer(),
-
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.qr_code),
-          onPressed: ()async{
-            final result = await QRservice.launchQRScanner();
-            if(result != null) {
-
-              qrCubit.addScan(result);
-
-            }
-          }
-        ),
-
-      appBar: AppBar(
-        title: const Text("QR Scans"),
-      ),
+      appBar: AppBar(title: Row(
+        children: const [
+          Icon(Icons.save_alt),
+          SizedBox(width: 8,),
+          Text("Storage"),
+        ],
+      ),),
 
       body: const _MainContentScans()
-
     );
   }
 }
-
-
 
 class _MainContentScans extends StatelessWidget {
   const _MainContentScans({
     Key? key,
   }) : super(key: key);
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +38,7 @@ class _MainContentScans extends StatelessWidget {
 
         final GlobalKey<AnimatedListState>listState = GlobalKey<AnimatedListState>();
 
-        final listScans = List.of(state.scans);
+        final listScans = List.of(state.storage);
 
         return AnimatedList(
           key: listState,
@@ -74,9 +48,9 @@ class _MainContentScans extends StatelessWidget {
 
             return ScanItem(
               scanModel: listScans[index],
-
-              onDeletePressed: ()async{
+              onDeletePressed: ()async {
                 final bool confirm = await showQRDialog(context);
+
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
                   onDeletePressed(index, listScans, listState);
@@ -84,17 +58,22 @@ class _MainContentScans extends StatelessWidget {
               },
 
               onSavePressed:()async{
+
                 final bool confirm = await showQRDialog(context);
+
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).moveInStorage(listScans[index]);
                 }
+
               }
+
             );
-          },
+           },
+      
         );
+
       },
      );
-
   }
 
 
@@ -136,11 +115,9 @@ class _MainContentScans extends StatelessWidget {
   GlobalKey<AnimatedListState> listState,
   ) {
 
-
     final removedItem = scans[index];
 
     scans.removeAt(index);
-
 
     listState.currentState!.removeItem(
       index, (context, animation) {

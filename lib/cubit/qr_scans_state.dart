@@ -4,18 +4,20 @@ part of 'qr_scans_cubit.dart';
 abstract class QrScansState {
 
   final List<ScanModel> scans;
+  final List<ScanModel> storage;
 
-  const QrScansState(this.scans);
+  const QrScansState({required this.scans, required this.storage});
 
 }
 
 class QrScansInitial extends QrScansState {
-  const QrScansInitial() : super( const [] );
+  const QrScansInitial() : super( scans: const [], storage: const [] );
 
 }
 
 class QrScansSetState extends QrScansState{
-  const QrScansSetState(List<ScanModel> scans) : super(scans);
+  const QrScansSetState(List<ScanModel> scans, List<ScanModel> storage) 
+    : super( scans: scans, storage: storage);
 
 
 }

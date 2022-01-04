@@ -3,13 +3,20 @@
 
 class ScanModel {
 
+  @override
+  String toString() {
+    return "scan storage = $storage";
+  }
+
   int? id;
   String? type;
+  int? storage = 0;
   final String value;
 
   ScanModel({
     this.id, 
-    this.type, 
+    this.type,
+    this.storage, 
     required this.value}){
 
       checkType(value);
@@ -20,14 +27,18 @@ class ScanModel {
     return ScanModel(
       id: mapJson["id"],
       type: mapJson["type"],
-      value: mapJson["value"]);
+      value: mapJson["value"],
+      storage: mapJson["storage"]
+      
+      );
   }
 
   Map<String, dynamic> toJsonMap(){
     return {
-      "id"    : id,
-      "type"  : type,
-      "value" : value
+      "id"      : id,
+      "type"    : type,
+      "value"   : value,
+      "storage" : storage
     };
 
   }

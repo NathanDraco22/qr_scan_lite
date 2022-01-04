@@ -14,9 +14,17 @@ class QrScansCubit extends Cubit<QrScansState> {
 
     final database = DBservice.db;
 
-    final scansFromDB = await database.getAllScans();
+    List<ScanModel> scansFromDB = await database.getAllScans();
 
-    emit(QrScansSetState(scansFromDB.reversed.toList()));
+    List<ScanModel> storage = List.of(scansFromDB);
+
+    storage.removeWhere((e)=> e.storage == 0 );
+
+    scansFromDB.removeWhere( (e)=> e.storage == 1 );
+
+    scansFromDB.forEach((print));  
+
+    emit(QrScansSetState(scansFromDB.reversed.toList(), storage));
 
 
   }
@@ -30,7 +38,7 @@ class QrScansCubit extends Cubit<QrScansState> {
 
     scan.id = res;
 
-    emit( QrScansSetState([scan, ...state.scans]) );
+    emit( QrScansSetState([scan, ...state.scans], [ ...state.storage]) );
 
 
   }
@@ -52,6 +60,24 @@ class QrScansCubit extends Cubit<QrScansState> {
     }
 
     // emit(QrScansSetState([...newState]));
+  }
+
+  void moveInStorage( ScanModel scanModel )async{
+
+    final db = DBservice.db;
+
+    scanModel.storage = 1;
+
+    await db.updateScan(scanModel);
+
+    final scans = [...state.scans];
+
+    final storage = [scanModel, ...state.storage];
+
+    scans.removeWhere((element) => element.storage == 1);
+
+
+    emit(QrScansSetState(scans, storage));
 
 
   }
