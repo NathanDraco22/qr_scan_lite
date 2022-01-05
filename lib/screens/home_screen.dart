@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_lite/cubit/qr_scans_cubit.dart';
 import 'package:qr_lite/models/scan_model.dart';
+import 'package:qr_lite/models/wifi_model.dart';
 import 'package:qr_lite/services/qr/qr_services.dart';
+import 'package:qr_lite/services/wifi/wifi_services.dart';
 import 'package:qr_lite/widget/custom_drawe.dart';
 import 'package:qr_lite/widget/scan_item.dart';
 
@@ -40,7 +42,14 @@ class HomeScreen extends StatelessWidget {
 
             if ( scanModel.type == "wifi"){
               
-              showQRDialog(context, "Connect To ${ scanModel.wifiModel?.name }", "");
+              final wantConnect = await showQRDialog(context, "Connect To ${ scanModel.wifiModel?.name }", "");
+
+              if(wantConnect == false) return;
+
+              WifiService.conectToWifi(
+                scanModel.wifiModel,
+                onConnected: ()=> onConnected(context, scanModel.wifiModel!)
+              );
 
               return;
 
@@ -107,6 +116,28 @@ class HomeScreen extends StatelessWidget {
       );
 
       return confirm;
+
+  }
+
+
+  void onConnected( BuildContext context, WifiModel wifiModel) {
+
+    ScaffoldMessenger.of(context).showMaterialBanner(
+      MaterialBanner(
+        backgroundColor: Colors.green.shade400,
+        content: Text( "Connected to ${wifiModel.name}") , 
+        leading: const Icon(Icons.wifi_outlined),
+        actions: [
+          TextButton(
+          style: TextButton.styleFrom(primary: Colors.amber.shade300),  
+          onPressed: (){
+            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+          },
+           child: const Text("OK"))
+        ],
+      )
+    );
+
 
   }
 
