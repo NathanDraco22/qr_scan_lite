@@ -17,6 +17,7 @@ void main() async {
       [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
 
   runApp(const MyApp());
+  
 }
 
 
