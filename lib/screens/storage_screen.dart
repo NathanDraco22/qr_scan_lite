@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qr_lite/cubit/qr_scans_cubit.dart';
 import 'package:qr_lite/models/scan_model.dart';
+import 'package:qr_lite/utils/utils.dart';
 import 'package:qr_lite/widget/scan_item.dart';
 
 
@@ -64,7 +65,7 @@ class _MainContentScans extends StatelessWidget {
             return ScanItem(
               scanModel: listScans[index],
               onDeletePressed: ()async {
-                final bool confirm = await showQRDialog(context);
+                final bool confirm = await Utils.showQRDialog(context, "Delete this Scan", "");
 
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
@@ -72,15 +73,7 @@ class _MainContentScans extends StatelessWidget {
                 }
               },
 
-              onSavePressed:()async{
-
-                final bool confirm = await showQRDialog(context);
-
-                if (confirm){
-                  BlocProvider.of<QrScansCubit>(context).moveInStorage(listScans[index]);
-                }
-
-              }
+              onSavePressed:(){}
 
             );
            },
@@ -89,40 +82,6 @@ class _MainContentScans extends StatelessWidget {
 
       },
      );
-  }
-
-
-  Future<bool> showQRDialog(BuildContext context)async {
-
-    bool confirm = false;
-
-    await showDialog<bool>(context: context,
-    builder: ( _ )=> AlertDialog(
-      title: const Text("Delete this Scan"),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            primary:  Colors.red.shade400,
-          ),
-          onPressed: (){
-            Navigator.pop(context);
-          }, 
-          child: const Text("No", style: TextStyle(fontWeight: FontWeight.bold),),),
-        TextButton(
-           style: TextButton.styleFrom(
-             primary:  Colors.blue.shade400,
-          ),
-          onPressed: (){
-            confirm = true;
-            Navigator.pop(context);
-          }, 
-          child: const Text("Yes", style: TextStyle(fontWeight: FontWeight.bold),))
-      ],
-    )
-    );
-
-    return confirm;
-
   }
 
   void onDeletePressed( int index, 

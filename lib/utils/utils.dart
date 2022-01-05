@@ -21,4 +21,41 @@ class Utils {
     return iconsMap[tipo];
   }
 
+  static   Future<bool> showQRDialog(
+    BuildContext context, 
+    String title, 
+    String message)async {
+
+      bool confirm = false;
+
+      await showDialog<bool>(context: context,
+      builder: ( _ )=> AlertDialog(
+        title: title != "" ? Text(title) : null,
+        content: message != ""? Text(message) : null,
+        actions: title == ""? null : [
+          TextButton(
+            style: TextButton.styleFrom(
+              primary:  Colors.red.shade400,
+            ),
+            onPressed: (){
+              Navigator.pop(context);
+            }, 
+            child: const Text("No", style: TextStyle(fontWeight: FontWeight.bold),),),
+          TextButton(
+            style: TextButton.styleFrom(
+              primary:  Colors.blue.shade400,
+            ),
+            onPressed: (){
+              confirm = true;
+              Navigator.pop(context);
+            }, 
+            child: const Text("Yes", style: TextStyle(fontWeight: FontWeight.bold),))
+        ],
+      )
+      );
+
+      return confirm;
+    
+    }
+
 }

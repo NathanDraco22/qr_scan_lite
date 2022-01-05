@@ -5,6 +5,7 @@ import 'package:qr_lite/models/scan_model.dart';
 import 'package:qr_lite/models/wifi_model.dart';
 import 'package:qr_lite/services/qr/qr_services.dart';
 import 'package:qr_lite/services/wifi/wifi_services.dart';
+import 'package:qr_lite/utils/utils.dart';
 import 'package:qr_lite/widget/custom_drawe.dart';
 import 'package:qr_lite/widget/scan_item.dart';
 
@@ -42,7 +43,7 @@ class HomeScreen extends StatelessWidget {
 
             if ( scanModel.type == "wifi"){
               
-              final wantConnect = await showQRDialog(context, "Connect To ${ scanModel.wifiModel?.name }", "");
+              final wantConnect = await Utils.showQRDialog(context, "Connect To ${ scanModel.wifiModel?.name }", "");
 
               if(wantConnect == false) return;
 
@@ -50,14 +51,11 @@ class HomeScreen extends StatelessWidget {
                 scanModel.wifiModel,
                 onConnected: ()=> onConnected(context, scanModel.wifiModel!)
               );
-
               return;
 
             }
 
-            showQRDialog(context, "", scanModel.value);
-
-
+            Utils.showQRDialog(context, "", scanModel.value);
           }
         ),
 
@@ -82,42 +80,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Future<bool> showQRDialog(
-    BuildContext context, 
-    String title, 
-    String message)async {
-
-      bool confirm = false;
-
-      await showDialog<bool>(context: context,
-      builder: ( _ )=> AlertDialog(
-        title: title != "" ? Text(title) : null,
-        content: message != ""? Text(message) : null,
-        actions: title == ""? null : [
-          TextButton(
-            style: TextButton.styleFrom(
-              primary:  Colors.red.shade400,
-            ),
-            onPressed: (){
-              Navigator.pop(context);
-            }, 
-            child: const Text("No", style: TextStyle(fontWeight: FontWeight.bold),),),
-          TextButton(
-            style: TextButton.styleFrom(
-              primary:  Colors.blue.shade400,
-            ),
-            onPressed: (){
-              confirm = true;
-              Navigator.pop(context);
-            }, 
-            child: const Text("Yes", style: TextStyle(fontWeight: FontWeight.bold),))
-        ],
-      )
-      );
-
-      return confirm;
-
-  }
 
 
   void onConnected( BuildContext context, WifiModel wifiModel) {
@@ -174,7 +136,7 @@ class _MainContentScans extends StatelessWidget {
               scanModel: listScans[index],
 
               onDeletePressed: ()async{
-                final bool confirm = await showQRDialog(context, "Delete this Scan");
+                final bool confirm = await Utils.showQRDialog(context, "Delete this Scan", "");
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).deleteScans(listScans[index].id!);
                   onDeletePressed(index, listScans, listState);
@@ -182,7 +144,7 @@ class _MainContentScans extends StatelessWidget {
               },
 
               onSavePressed:()async{
-                final bool confirm = await showQRDialog(context, "Move to My Storage");
+                final bool confirm = await Utils.showQRDialog(context, "Move to My Storage", "");
                 if (confirm){
                   BlocProvider.of<QrScansCubit>(context).moveInStorage(listScans[index]);
                 }
@@ -195,39 +157,6 @@ class _MainContentScans extends StatelessWidget {
 
   }
 
-
-  Future<bool> showQRDialog(BuildContext context, String message)async {
-
-    bool confirm = false;
-
-    await showDialog<bool>(context: context,
-    builder: ( _ )=> AlertDialog(
-      title: Text(message),
-      actions: [
-        TextButton(
-          style: TextButton.styleFrom(
-            primary:  Colors.red.shade400,
-          ),
-          onPressed: (){
-            Navigator.pop(context);
-          }, 
-          child: const Text("No", style: TextStyle(fontWeight: FontWeight.bold),),),
-        TextButton(
-           style: TextButton.styleFrom(
-             primary:  Colors.blue.shade400,
-          ),
-          onPressed: (){
-            confirm = true;
-            Navigator.pop(context);
-          }, 
-          child: const Text("Yes", style: TextStyle(fontWeight: FontWeight.bold),))
-      ],
-    )
-    );
-
-    return confirm;
-
-  }
 
   void onDeletePressed( int index, 
   List<ScanModel> scans, 
