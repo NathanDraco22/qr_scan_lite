@@ -1,11 +1,10 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:qr_lite/models/scan_model.dart';
 import 'package:url_launcher/url_launcher.dart' as ul;
 
 
 class QRservice {
 
-  static Future<ScanModel?> launchQRScanner()async{
+  static Future<String?> launchQRScanner()async{
 //--- Init QR and BarCode Scanner-----------------
     String result = 
       await FlutterBarcodeScanner.scanBarcode(
@@ -20,9 +19,9 @@ class QRservice {
 
 //--- try to launch a url-----------------------
 
-    await tryLaunch(result);
+    // await tryLaunch(result);
 
-    return ScanModel(value: result);
+    return result;
 
   }
 
@@ -31,10 +30,6 @@ class QRservice {
     if( await ul.canLaunch(result) ){
 
       ul.launch(result);
-
-      ScanModel(
-        value: result
-      ); 
       return true;     
     
     }

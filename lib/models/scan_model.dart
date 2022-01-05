@@ -1,5 +1,4 @@
-
-
+import 'package:qr_lite/models/wifi_model.dart';
 
 class ScanModel {
 
@@ -11,6 +10,8 @@ class ScanModel {
   int? id;
   String? type;
   int? storage = 0;
+  WifiModel? wifiModel;
+  String? valueToShow;
   final String value;
 
   ScanModel({
@@ -60,13 +61,18 @@ class ScanModel {
     } 
 
 
-    if(value.contains("tel:")){
+    if(value.contains("tel:") || value.contains("TEL:") ){
       type = "tel" ;
       return;
     } 
 
     if(value.contains("WIFI")){
       type = "wifi";
+
+      wifiModel = WifiModel.fromRawString(value);
+
+      valueToShow = "WiFi: ${ wifiModel?.name }\nPass: ${ wifiModel?.password }";
+
       return;
     }
 

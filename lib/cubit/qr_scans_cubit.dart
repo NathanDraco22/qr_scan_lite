@@ -20,9 +20,7 @@ class QrScansCubit extends Cubit<QrScansState> {
 
     storage.removeWhere((e)=> e.storage == 0 );
 
-    scansFromDB.removeWhere( (e)=> e.storage == 1 );
-
-    scansFromDB.forEach((print));  
+    scansFromDB.removeWhere( (e)=> e.storage == 1 );  
 
     emit(QrScansSetState(scansFromDB.reversed.toList(), storage));
 

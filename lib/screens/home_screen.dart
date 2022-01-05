@@ -14,8 +14,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final qrCubit = BlocProvider.of<QrScansCubit>(context, listen: false);
-   
-
+  
     qrCubit.getAllScans();
 
     return Scaffold(
@@ -28,11 +27,28 @@ class HomeScreen extends StatelessWidget {
           child: const Icon(Icons.qr_code),
           onPressed: ()async{
             final result = await QRservice.launchQRScanner();
-            if(result != null) {
+            
+            if(result == null) return;
 
-              qrCubit.addScan(result);
+            final scanModel = ScanModel(value: result);
+            
+            qrCubit.addScan(scanModel);
+
+            final isLaunched = await QRservice.tryLaunch(result);
+
+            if(isLaunched) return;
+
+            if ( scanModel.type == "wifi"){
+              
+              showQRDialog(context, "Connect To ${ scanModel.wifiModel?.name }", "");
+
+              return;
 
             }
+
+            showQRDialog(context, "", scanModel.value);
+
+
           }
         ),
 
@@ -56,6 +72,45 @@ class HomeScreen extends StatelessWidget {
 
     );
   }
+
+  Future<bool> showQRDialog(
+    BuildContext context, 
+    String title, 
+    String message)async {
+
+      bool confirm = false;
+
+      await showDialog<bool>(context: context,
+      builder: ( _ )=> AlertDialog(
+        title: title != "" ? Text(title) : null,
+        content: message != ""? Text(message) : null,
+        actions: title == ""? null : [
+          TextButton(
+            style: TextButton.styleFrom(
+              primary:  Colors.red.shade400,
+            ),
+            onPressed: (){
+              Navigator.pop(context);
+            }, 
+            child: const Text("No", style: TextStyle(fontWeight: FontWeight.bold),),),
+          TextButton(
+            style: TextButton.styleFrom(
+              primary:  Colors.blue.shade400,
+            ),
+            onPressed: (){
+              confirm = true;
+              Navigator.pop(context);
+            }, 
+            child: const Text("Yes", style: TextStyle(fontWeight: FontWeight.bold),))
+        ],
+      )
+      );
+
+      return confirm;
+
+  }
+
+
 }
 
 
